@@ -1,0 +1,14 @@
+# Visual Studio
+.vs/
+
+# 编译生成文件
+Debug/
+Release/
+x64/
+x86/
+
+# Visual Studio 用户文件
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
