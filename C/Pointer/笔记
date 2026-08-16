@@ -1,0 +1,22 @@
+# C语言指针
+
+## 1. 指针是什么
+
+指针变量用于存储变量的地址。
+
+例如：
+
+```c
+#include <stdio.h>
+
+int main()
+{
+    int a = 10;
+    int* p = &a;
+
+    printf("a = %d\n", a);
+    printf("a的地址 = %p\n", &a);
+    printf("*p = %d\n", *p);
+
+    return 0;
+}
