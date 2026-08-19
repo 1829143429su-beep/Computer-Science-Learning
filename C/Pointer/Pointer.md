@@ -124,4 +124,95 @@ test_modify_with_function()
               ↓
           原来的 a
 ```
+#### 综合练习1
+```c
+	void test_basic()
+	{
+		int a = 10;
+		int* p = &a;
+		printf("a=%d\n", a);
+		printf("a的地址是%p\n", &a);
+		printf("p的值是%p\n", p);
+		printf("*p的值是%d\n", *p);
 
+	}
+	void test_modify()
+	{
+		int a = 10;
+		int* p = &a;
+		*p = 20;
+		printf("修改后，a=%d", a);
+	}
+
+	void test_swap()
+	{
+		int a = 10;
+		int b = 30;
+		int* p1 = &a;
+		int* p2 = &b;
+
+		int temp = *p1;
+		*p1 = *p2;
+		*p2 = temp;
+		printf("交换后，a=%d,b=%d", a, b);
+	}
+	void test_array()
+	{
+		int arr[5] = {1, 2, 3, 4, 5};
+		int* p = arr;
+		int i = 0;
+		while (i < 5) {
+			printf("%d\n", *p);
+			i++;
+			p++;
+		}
+	}
+
+	void test_null()
+	{
+		int a = 10;
+		int* p = NULL;
+		if (p == NULL) {
+			printf("指针p是空指针\n");
+		}
+		p = &a;
+		if (p != NULL) {
+			printf("*p=%d", *p);
+		}
+	}
+
+int main()
+{
+    // 依次调用
+}
+```
+### 指针与数组
+```text
+重点：
+int arr[5] = {1,2,3,4,5};
+int* p = arr;
+
+理解：
+arr
+↓
+首元素地址
+p
+↓
+arr[0]
+```
+学习：
+数组名与地址
+指针遍历数组
+p++
+p--
+p + 1
+*(p + i)
+指针与数组的关系
+
+练习：
+求数组最大值
+求数组最小值
+求平均值
+数组逆序
+冒泡排序
+查找元素
