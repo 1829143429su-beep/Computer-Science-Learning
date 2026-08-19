@@ -223,39 +223,28 @@ int* p = arr;
 ### 数组名与地址
 ```text
 arr
-
  ↓
- 
 arr[0] 的地址
 
  p
- 
  ↓
- 
 arr[0] 的地址
 
 *p
-
  ↓
- 
 arr[0]
 
 
 int* p = arr;
-
 int* p = &arr[0];
 
 
 p++
-
  ↓
- 
 arr[1]的地址
 
 *p
-
  ↓
- 
 arr[1]的值
 ```
 
