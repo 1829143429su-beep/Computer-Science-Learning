@@ -1,6 +1,6 @@
 # C语言指针
 
-## 1. 指针是什么
+##  指针是什么
 
 指针变量用于存储变量的地址。
 
@@ -23,7 +23,7 @@ int main()
 ```
 
 
-## 2.重点：
+## 重点：
 
 int a = 10;
 
@@ -31,7 +31,7 @@ int* p = &a;
 
 创建一个int*类型的变量p，让它保存a的地址
 
-## 3.彻底搞懂
+## 彻底搞懂
 
 a：变量本身 ->10
 
@@ -54,7 +54,7 @@ p:指针变量，保存a的地址(p → &a) ->1000
 
 NULL
 
-## 4.练习
+## 练习
 #### 输出变量和地址
 易混：
 ```c
@@ -126,93 +126,155 @@ test_modify_with_function()
 ```
 #### 综合练习1
 ```c
-	void test_basic()
-	{
-		int a = 10;
-		int* p = &a;
-		printf("a=%d\n", a);
-		printf("a的地址是%p\n", &a);
-		printf("p的值是%p\n", p);
-		printf("*p的值是%d\n", *p);
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
 
-	}
-	void test_modify()
-	{
-		int a = 10;
-		int* p = &a;
-		*p = 20;
-		printf("修改后，a=%d", a);
-	}
+//输出变量和地址
+void test_address()
+{
+    int a = 4;
+    int* p = &a;
+    printf("a = %d\n", a);//变量a
+    printf("*p = %d\n", *p);//*p是解引用，获取指针p指向的值，即a
+    printf("a的地址是%p",p);//指针变量p，保存a的地址
+    printf("a的地址是%p", &a);//&a取a的地址
+}
 
-	void test_swap()
-	{
-		int a = 10;
-		int b = 30;
-		int* p1 = &a;
-		int* p2 = &b;
+//用指针修改变量
+void test_modify() 
+{
+    int a = 4;
+    int* p = &a;
+    printf("输入想要修改的值：");
+    scanf("%d", p);
+   // *p = 10;
+    printf("a=%d", a);
+}
 
-		int temp = *p1;
-		*p1 = *p2;
-		*p2 = temp;
-		printf("交换后，a=%d,b=%d", a, b);
-	}
-	void test_array()
-	{
-		int arr[5] = {1, 2, 3, 4, 5};
-		int* p = arr;
-		int i = 0;
-		while (i < 5) {
-			printf("%d\n", *p);
-			i++;
-			p++;
-		}
-	}
+//使用指针交换两个变量
+void test_swap()
+{
+    int a = 4;
+    int b = 5;
+    int* p1 = &a;
+    int* p2 = &b;
+    int temp = *p1;
 
-	void test_null()
-	{
-		int a = 10;
-		int* p = NULL;
-		if (p == NULL) {
-			printf("指针p是空指针\n");
-		}
-		p = &a;
-		if (p != NULL) {
-			printf("*p=%d", *p);
-		}
-	}
+    *p1=*p2;
+    *p2=temp;
+    printf("交换后，a=%d,b=%d", a, b);
+}
 
+//使用指针遍历数组
+void test_array()
+{
+    int arr[5] = { 1,2,3,4,5 };
+    int* p = arr;
+    int i = 0;
+    while (i < 5) {
+        printf("%d\n", *p);
+        i++;
+        p++;
+    }
+}
+
+//使用函数和指针修改变量
+void test_modify1(int* p)
+{
+    int b=0;
+    printf("输入修改后的值:");
+    scanf("%d",&b);
+    *p = b;
+}
+void test_modify_with_function()
+{
+    int a = 4;
+    int* p = &a;
+    printf("修改前a=%d\n", a);
+    test_modify1(&a);//p也可以
+    printf("修改后a=%d", a);
+}
+
+//NULL
+void test_null()
+{
+    int* p = NULL;
+    if (p == NULL) {
+        printf("p没有指向任何对象\n");
+    }
+    int a = 10;
+    p = &a;
+    if (p != NULL) {
+        printf("%d", *p);
+    }
+}
 int main()
 {
-    // 依次调用
+    test_null();
+    return 0;
 }
 ```
-### 指针与数组
+## 指针与数组
 ```text
-重点：
 int arr[5] = {1,2,3,4,5};
 int* p = arr;
-
-理解：
-arr
-↓
-首元素地址
-p
-↓
-arr[0]
 ```
-学习：
-数组名与地址
-指针遍历数组
-p++
-p--
-p + 1
-*(p + i)
-指针与数组的关系
 
-练习：
-求数组最大值
-求数组最小值
-求平均值
-数组逆序
-冒泡排序
-查找元素
+### 数组名与地址
+1.
+arr
+ ↓
+arr[0] 的地址
+
+ p
+ ↓
+arr[0] 的地址
+
+*p
+ ↓
+arr[0]
+2.
+int* p = arr;
+int* p = &arr[0];
+3.
+p++
+ ↓
+arr[1]的地址
+
+*p
+ ↓
+arr[1]的值
+
+### 访问数组的第 i 个元素
+arr[i];
+*(arr+i);
+p[i];
+*(p+i);
+
+### 指针遍历数组
+```c
+void test_array_with_pointer()
+{
+    int arr[5] = { 1,2,3,4,5 };
+    int* p = arr;
+   
+    while (p < arr + 5) {    //arr+5是该数组末尾元素之后的位置
+        printf("%d\n", *p);
+        p++;
+    }
+arr
+ ↓
+┌─────┬─────┬─────┬─────┬─────┐
+│  1  │  2  │  3  │  4  │  5  │
+└─────┴─────┴─────┴─────┴─────┘
+ ↑                                   ↑
+arr                              arr + 5
+```
+
+## 练习
+#### 求数组最大值
+#### 求数组最小值
+#### 求平均值
+#### 数组逆序
+#### 冒泡排序
+#### 查找元素
