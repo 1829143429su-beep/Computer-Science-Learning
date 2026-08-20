@@ -337,15 +337,48 @@ x = 5              y = 10
  ↑                   ↑
 a 保存 x 的地址      b 保存 y 的地址
 ```
-#### 指针作为函数参数
-#### 指针作为返回值
-#### 数组作为函数参数
-#### 函数指针先了解，不需要深入
-
-#### 练习：
-
+#### 指针作为函数参数处理数组
+```
 swap()
+
 max()
+int array_max(int* arr, int size)；
+
 min()
-sort()
-reverse()
+
+sort() 排升序
+void array_sort(int* arr, int size)
+
+reverse()数组逆序
+void array_reverse(int* arr, int size)
+```
+#### 指针作为返回值
+
+
+#### 函数指针先了解，不需要深入
+int (*p)(int, int);//p 是一个函数指针，它指向一个“接收两个 int、返回 int”的函数。
+```text
+函数：
+返回值  函数名(参数)
+int* p = &a;
+*p
+
+函数指针：
+返回值  (*指针名)(参数)
+int (*p)(int, int) = add;
+p(3, 5)
+```
+
+```text
+int
+ ↓
+函数返回 int
+
+(*p)
+ ↓
+p 是一个指针
+
+(int, int)
+ ↓
+这个函数接收两个 int 参数
+```
