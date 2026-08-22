@@ -530,8 +530,9 @@ src  = " world"
         ↓
 dest = "hello world"
 ```
-```text
+
 dest 不能指向字符串常量：
+```text
 char* dest = "hello";//"hello" 是字符串字面量，不能拿它作为可写的目标空间。
 char* src = "world";
 *dest = *src;//相当于尝试修改 "hello"，这是错误的。
@@ -569,8 +570,8 @@ hello
 这种行为是未定义行为（Undefined Behavior）。
 ```
 
-```text
 char dest[20] = "hello"; //这里创建的是一个真正的字符数组。
+```text
 可以理解成：
 dest
  ↓
@@ -581,6 +582,28 @@ dest
 dest[0] = 'H'; //完全可以。
 ```
 
+总结：
+```text
+char* p = "hello";//p 指向一个字符串字面量，只读。
+char str[] = "hello";//创建一个字符数组，里面初始化了 "hello"，可以修改。
 
+str[0] = 'H';   // ✅
+而：
+p[0] = 'H';     // ❌
+这两个看起来很像，但底层性质不同。
+```
 
+严谨写法
+```text
+char* src = "world"，却没问题？
+代码对 src 只做了*src和src++
+只是读取它，没有做 *src = ...的修改，所以没问题。
+
+不过从更现代、更严谨的写法来说，可以写成：
+const char* src = "world";
+const 表示：我只读取 src 指向的字符串，不修改它。
+
+void my_strcat(char* dest, const char* src)
+这样就更加规范。
+```
 
