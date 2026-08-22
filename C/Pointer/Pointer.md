@@ -404,6 +404,9 @@ char str[5] = {'h', 'e', 'l', 'l', 'o'};
 char str[] = {'h', 'e', 'l', 'l', 'o', '\0'};才是完整的字符串。
 
 char str[] = "hello";//编译器会自动加上'\0'
+
+字符串输出 %s
+
 ```text
 当 C 语言处理字符串时，它不知道数组有多长。
 它采用的规则是：
@@ -416,20 +419,131 @@ str -> 'h'
 p -> str[0]
 *p='h'
 ```
+
 指针移动：
-
+```c
 p++;// p ->'e'
-
 p++;// p ->'l'
+```
 
-strlen
-strcpy
-strcmp
-strcat
+遍历
+```c
+普通数组：p < arr + size
 
-然后自己实现：
+字符串：*p != '\0'
+```
 
-my_strlen()
-my_strcpy()
-my_strcmp()
-my_strcat()
+%zu:printf() 中用于输出 size_t 类型的格式说明符
+```c
+标准库的 strlen() 返回的就是 size_t
+char str[] = "hello";
+size_t len = strlen(str);
+这里 strlen(str) 返回的是size_t  而不是 int。
+所以输出printf("%zu\n", len);
+
+%zu
+ ││
+ │└── u：无符号整数
+ └── z：size_t
+%zu = 输出 size_t 类型的无符号整数。
+```
+
+```text
+变量类型	     printf
+int	            %d
+unsigned int	%u
+long	        %ld
+unsigned long	%lu
+float	        %f
+double	        %f
+char	        %c
+字符串	        %s
+size_t	        %zu
+地址	        %p
+```
+
+#### strlen
+strlen()用于取字符串的长度,不包括‘\0’
+
+int my_strlen(char* str)
+```
+char str[] = "hello";
+printf("%zu", strlen(str));//结果为5
+
+h e l l o \0
+←──5──→
+```
+
+#### strcpy
+strcpy()用于字符串复制
+
+strcpy(dest, src);
+
+void my_strcpy(char* dest, char* src)
+```text
+从 src 一个字符一个字符复制到 dest：
+src
+ ↓
+h e l l o \0
+
+dest
+ ↓
+_ _ _ _ _ _
+注意：最后的 '\0' 也必须复制。
+```
+
+#### strcmp
+strcmp()：用于字符串对比
+
+int my_strcmp(char* str1, char* str2)
+```
+两个字符串
+   ↓
+同时往后遍历
+   ↓
+逐个字符比较
+   ↓
+发现不同 → 判断大小
+   ↓
+一直相同直到 '\0' → 相等
+
+"abc" 和 "abc"   // 相等
+"abc" 和 "abd"   // str1 < str2
+"abd" 和 "abc"   // str1 > str2
+ASCII码比较
+```
+
+#### strcat
+strcat()：用于字符串拼接
+
+void my_strcat(char* dest, char* src)
+```text
+找到第一个字符串的 '\0'
+        ↓
+从这里开始写
+        ↓
+把第二个字符串复制过来
+        ↓
+最后补 '\0'
+
+dest = "hello"
+src  = " world"
+        ↓
+dest = "hello world"
+
+dest 不能指向字符串常量：
+char* dest = "hello";
+char* src = "world";
+//"hello" 是字符串字面量，不能拿它作为可写的目标空间。
+
+*dest = *src;
+//相当于尝试修改 "hello"，这是错误的。
+
+应该准备一个字符数组（无*）
+char dest[20] = "hello";
+char* src = "world";
+```
+
+
+
+
