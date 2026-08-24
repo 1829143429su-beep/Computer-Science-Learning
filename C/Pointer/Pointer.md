@@ -537,10 +537,6 @@ char* dest = "hello";//"hello" 是字符串字面量，不能拿它作为可写�
 char* src = "world";
 *dest = *src;//相当于尝试修改 "hello"，这是错误的。
 
-应该准备一个字符数组（无*）
-char dest[20] = "hello";
-char* src = "world";
-
 "hello"叫做字符串字面量。
 它不是普通的字符数组变量，而是程序中的一段字符串数据。
 可以粗略理解成：
@@ -584,13 +580,16 @@ dest[0] = 'H'; //完全可以。
 
 总结：
 ```text
-char* p = "hello";//p 指向一个字符串字面量，只读。
-char str[] = "hello";//创建一个字符数组，里面初始化了 "hello"，可以修改。
-
-str[0] = 'H';   // ✅
-而：
-p[0] = 'H';     // ❌
-这两个看起来很像，但底层性质不同。
+1.char str[] = "hello";	一个字符数组，保存 "hello"，可以修改
+2.char* str = "hello";	一个字符指针，指向 "hello"字符串字面量，只读
+3.char* str[20];	一个数组，里面有 20 个 char*
+str
+ ↓
+┌────────┬────────┬────────┬────────┐
+│ char*  │ char*  │ char*  │  ...   │
+└────────┴────────┴────────┴────────┘
+    ↓
+  "hello"
 ```
 
 严谨写法
@@ -607,3 +606,110 @@ void my_strcat(char* dest, const char* src)
 这样就更加规范。
 ```
 
+#### 综合练习2
+输入两个字符串
+    ↓
+输出两个字符串长度
+    ↓
+复制第一个字符串
+    ↓
+比较两个字符串
+    ↓
+把两个字符串拼接起来
+    ↓
+输出最终结果
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include<stdio.h>
+#include<string.h>
+//输出两个字符串长度
+int my_strlen(char* dest) {
+	int i = 0;
+	while (*dest != 0) {
+		i++;
+		dest++;
+	}//不包括'\0'
+	return i;//int型函数需返回
+}
+//复制第一个字符串
+//修改dest1
+void my_strcpy(char* dest1, char* src) {
+	while (*src != '\0') {
+		*dest1 = *src;
+		dest1++;
+		src++;
+	}
+	*dest1 = '\0';
+}
+//比较两个字符串
+int my_strcmp(char* dest, char* src) {
+	while (*dest != '\0' && *src != '\0') {
+		if (*dest == *src) {
+			dest++;
+			src++;
+		}
+		else {
+			break;
+		}
+	}
+	//遇到第一个'\0'后，开始判断是都遇到了还是只有一个结束了
+	if (*dest == *src) {
+		return 0;
+	}
+	else if (*dest > *src) {
+		return 1;
+	}
+	else {
+		return -1;
+	}
+}
+//拼接两个字符串
+	//会修改dest1,用字符数组
+	void my_strcat(char* dest1, char* src) {
+		while (*dest1 != '\0') {
+			dest1++;
+		}
+		while (*src != '\0') {
+			*dest1 = *src;
+			dest1++;
+			src++;
+		}
+		*dest1 = '\0';
+	}
+
+	int main() {
+		//输入两个字符串
+		char* dest = "hello";
+		char dest1[20] = "hello";
+		char* src = "world";
+
+		//输出两个字符串长度
+		printf("字符串长度分别是%zu,%zu", strlen(dest), strlen(src));
+		int length1 = my_strlen(dest);
+		int length2 = my_strlen(src);
+		printf("字符串长度分别是%d,%d", length1, length2);
+
+		//复制第一个字符串
+		my_strcpy(dest1, src);
+		printf("str复制dest1后得到：%s",dest1);//
+
+		//比较两个字符串
+		int result = my_strcmp(dest, src);//先运行或表示
+		if (result == 1) {
+			printf("%s>%s", dest, src);
+		}
+		else if (result== -1) {
+			printf("%s<%s", dest, src);
+		}
+		else {
+			printf("%s=%s", dest, src);
+		}
+
+		//把两个字符串拼接起来
+		my_strcat(dest1, src);//先运行 再使用
+		printf("拼接后dest为:%s",dest1 );
+
+		return 0;
+	}
+```
