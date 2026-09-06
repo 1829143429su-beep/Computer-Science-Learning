@@ -18,12 +18,12 @@ void practice3() {
 			break;
 		}
 		if (size==capacity) {
-			capacity *= 2;
+			capacity *= 2;//À©ÈÝ
 			int* temp = realloc(p, capacity * sizeof(int));
 			if (temp == NULL) {
 				printf("À©ÈÝÊ§°Ü\n");
-				free(p);
-				return;
+				free(p);//
+				return;//
 			}
 			p = temp;
 		}
