@@ -132,6 +132,7 @@ struct Student s = {"Tom", 20, 90.5}; //属于定义变量时初始化，可以�
 创建后整体写 {} 赋值	s = {"Tom",20,90.5}; ❌
 ```
 #### 4.scanf
+里面不能写提示文字
 ```c
 scanf("%s", students[i].name); //为什么没有 &
 因为：students[i].name//本身就是字符数组，在这里会转换成首元素地址
@@ -142,6 +143,12 @@ scanf("%d", &students[i].age);
 这里有一个需要注意的地方：你在格式字符串里写了逗号 ,  
 
 这意味着你输入时必须严格按照：Tom,20,90.5 的格式输入。
+
+```c
+struct Student* p;
+scanf("%d", p->age);     // ❌ p->age 是数据
+scanf("%d", &p->age);    // ✅ &p->age 是地址
+```
 
 注意
 ```text
@@ -160,6 +167,20 @@ scanf("%[^,],%d,%lf",
     &students[i].score);
 ```
 
+#### 4.
+s	    数组名，传函数时通常变成第一个元素地址
+
+&s[0]	第一个学生的地址（第二个学生通过p+i即可）
+
+&s	    整个数组的地址
+```c
+void input_students(struct Student* p, int size)
+
+struct Student s[size];//是结构体数组；
+input_students(s, size);     // ✅
+input_students(&s[0], size); // ✅
+input_students(&s, size);    // ❌
+```
 
 ### 练习
 #### 1.结构体初始化：
@@ -196,9 +217,28 @@ Lucy  19   95.5
 要使用：strcpy(students[0].name, "Tom");
 ② 用 for 循环输出三个学生
 ```
-### 3.结构体数组和 scanf，让用户自己输入 3 个学生的信息
+#### 3.结构体数组和 scanf，让用户自己输入 3 个学生的信息
 
+#### 4.输入 3 个学生的信息，然后找出分数最高的学生。
+找学生！！！ 关注下标
 
+#### 5.把结构体指针传给函数，在函数里修改学生信息
+```c
+void change_student(struct Student* p) //指针作为参数
+{
+    p->age = 21;
+    p->score = 95.5;
+}
+int main()
+{
+    struct Student s = {"Tom", 20, 90.5};
+    change_student(&s)；//括号内写 变量地址；通过传地址改变值
+    printf("分数：%.1f\n", s.score);
+    return 0;
+}
 ```
+
+
+
 ```
 ```
