@@ -167,7 +167,7 @@ scanf("%[^,],%d,%lf",
     &students[i].score);
 ```
 
-#### 4.
+#### 4.区分
 s	    数组名，传函数时通常变成第一个元素地址
 
 &s[0]	第一个学生的地址（第二个学生通过p+i即可）
@@ -181,7 +181,10 @@ input_students(s, size);     // ✅
 input_students(&s[0], size); // ✅
 input_students(&s, size);    // ❌
 ```
-
+```c
+struct Student s = { "Jack", 20, 90.0 }; //你现在这个 s 是一个学生
+&s就是：这个学生 s 的地址
+```
 ### 练习
 #### 1.结构体初始化：
 ```c
