@@ -240,13 +240,35 @@ int main()
     return 0;
 }
 ```
-####
-
+#### 6.结构体数组 + 指针 + 函数
+你自己写一个函数：
+```c
+int find_max_student(struct Student* p, int size)
+```
+```text
+要求：
+p 指向学生数组
+size 表示学生数量
+找出分数最高的学生
+返回这个学生在数组中的下标
+main 中输出他的姓名、年龄、分数
+```
+```text
+目前最高分是 students[max_index]
+那么每次就应该比较：
+当前学生 students[i]
+        ↓
+        和
+        ↓
+目前最高分学生 students[max_index]
+```
 #### 7.批量修改信息
 要求：每个学生加5分
 
 #### 8.修改指定学生信息
 要求：把指定下标学生的分数增加 5 分。
+
+(p + index)->score
 
 
 
