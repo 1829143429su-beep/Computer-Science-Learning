@@ -1,23 +1,22 @@
-结构体 + 动态内存
-
+# 结构体 + 动态内存
+### 1.
 开始组合：
-
+```c
 typedef struct
 {
     char name[20];
     int age;
 } Student;
-
+```
 然后：
-
+```c
 Student* p = malloc(sizeof(Student));
-
+```
 做一个小项目：
 
 学生管理系统
-
+```text
 实现：
-
 1. 添加学生
 2. 删除学生
 3. 修改学生
@@ -26,7 +25,16 @@ Student* p = malloc(sizeof(Student));
 6. 排序
 7. 保存文件
 8. 退出
+```
 
+
+
+```
+```
+```
+```
+```
+```
 这个项目不要追求漂亮。
 
 目标是：
