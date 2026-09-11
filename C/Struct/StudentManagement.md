@@ -126,32 +126,53 @@ void create_students() {
 }
 
 ```
-##### 考虑：如何让 p 和学生数量 size 在函数结束后仍然存在？
+#### 考虑：如何让 p 和学生数量 size 在函数结束后仍然存在？
 问题：
 ```
 free(p);之后，所有学生数据都没了。
-也就是说：
-创建学生
-   ↓
-输入学生
-   ↓
-显示学生
-   ↓
-free(p)
-   ↓
-数据全部释放
 练习这样写没问题，学生管理系统显然不能这样
 
-void create_students()
-{
-    Student* p = malloc(sizeof(Student) * size);
-    ...
-}
-这里的 p 是局部变量。
-当：create_students();执行结束后，p 这个变量本身就不存在了。
 让 p 在 create_students() 函数结束后，仍然能够被外面的程序使用。
 ```
 
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct
+{
+    char name[20];
+    int age;
+    double score;
+} Student;
+
+// 创建多个学生
+void create_students(Student* p, int size)
+{
+    Student* p = malloc(sizeof(Student) * size);
+   //这个 p 是函数自己的局部变量，外面的 p 不会跟着改变。函数执行结束后，p 这个变量本身就不存在了。
+}
+
+// main
+int main()
+{
+    int size;
+    printf("请输入学生数量：");
+    scanf("%d", &size);
+
+    Student* p = NULL;//p 是一个指针，它存放的是 Student 的地址。
+    create_students(&p, size);
+    // 后面在这里继续使用 p
+
+    return 0;
+}
+```
+
+解决:
+```
+
+这个 p 是函数自己的局部变量，外面的 p 不会跟着改变。
+```
 #### 第 3 步：添加学生
 realloc() //实现“学生数量可以增加”。
 例如：
