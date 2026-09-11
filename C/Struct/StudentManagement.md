@@ -43,6 +43,22 @@ typedef struct
 Student* p = malloc(sizeof(Student));
 ```
 ##### 练习1：使用 malloc 动态创建一个 Student，输入一个学生的信息（姓名、年龄、成绩），输出后 free。
+```c
+void create_student() {
+	Student* p = malloc(sizeof(Student));
+	if (p == NULL) {
+		printf("动态内存创建失败");
+		return;
+	}
+
+	printf("输入学生信息：");
+	scanf("%s %d %lf", p->name, &p->age, &p->score);
+	
+	printf("学生姓名：%s,年龄：%d,分数：%.1f", p->name, p->age, p->score);
+	free(p);
+}
+```
+
 问题：
 ```text
 1.现在你只创建了一个学生：
@@ -67,7 +83,7 @@ free(p);
 p = NULL;//释放后置 NULL 是个好习惯
 ```
 
-### 第 2 步：动态数组
+#### 第 2 步：动态数组
 从：
 ```c
 Student* p = malloc(sizeof(Student));
@@ -85,14 +101,60 @@ p
 │   0    │   1    │   2    │
 └────────┴────────┴────────┘
 ```
-复习:
+##### 练习2：动态创建多个学生，数量由用户确定
 ```c
-realloc() //实现“学生数量可以增加”。
+void create_students() {
+	int size;
+	printf("请输入学生数量：");
+	scanf("%d", size);
+	Student* p = malloc(sizeof(Student)*size);
+	if (p == NULL) {
+		printf("动态内存创建失败");
+		return;
+	}
+	for (int i = 0; i < size; i++) {
+		printf("输入第%d个学生的信息：",i+1);
+		scanf("%s %d %lf", (p+i)->name, &(p+i)->age, &(p+i)->score);
+	}
+
+	for (int i = 0; i < size; i++) {
+		printf("第%d个学生 姓名：%s,年龄：%d,分数：%.1f",i+1, (p + i)->name, (p + i)->age, (p + i)->score);
+	}
+	
+	free(p);
+	p = NULL;
+}
+
 ```
-第 3 步：添加学生
+##### 考虑：如何让 p 和学生数量 size 在函数结束后仍然存在？
+问题：
+```
+free(p);之后，所有学生数据都没了。
+也就是说：
+创建学生
+   ↓
+输入学生
+   ↓
+显示学生
+   ↓
+free(p)
+   ↓
+数据全部释放
+练习这样写没问题，学生管理系统显然不能这样
 
+void create_students()
+{
+    Student* p = malloc(sizeof(Student) * size);
+    ...
+}
+这里的 p 是局部变量。
+当：create_students();执行结束后，p 这个变量本身就不存在了。
+让 p 在 create_students() 函数结束后，仍然能够被外面的程序使用。
+```
+
+#### 第 3 步：添加学生
+realloc() //实现“学生数量可以增加”。
 例如：
-
 当前学生：3人
         ↓
 添加第4人
@@ -101,7 +163,7 @@ realloc()
         ↓
 现在：4人
 
-第 4 步：删除学生
+#### 第 4 步：删除学生
 
 这个非常适合练你之前的数组知识：
 
@@ -118,7 +180,7 @@ Bob   85
 
 本质上就是把后面的元素向前移动。
 
-第 5 步：修改 / 查找 / 显示 / 排序
+#### 第 5 步：修改 / 查找 / 显示 / 排序
 
 这些你其实已经会了，只是把：
 
@@ -130,7 +192,7 @@ Student* students;
 
 所以这部分是知识迁移。
 
-第 6 步：保存文件
+#### 第 6 步：保存文件
 
 最后再加入：
 
