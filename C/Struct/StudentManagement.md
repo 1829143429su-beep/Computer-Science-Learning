@@ -299,6 +299,25 @@ realloc 不是“清空后重新申请”。
 
 它的核心作用是：改变已有动态内存块的大小，同时保留原有数据（在成功扩容的情况下）。
 
+##### 练习3：添加学生,每次加1人
+```c
+void add_student(Student** pp,int* size) { //main中的size也要同步改
+	(*size)++;//每次加1人
+	Student* temp = realloc(*pp, sizeof(Student) * (*size));
+	if (temp != NULL) {
+		*pp = temp;
+	}
+	else
+	{
+		printf("扩容失败\n");
+		return;
+	}
+	printf("请输入第%d个学生的信息：", *size);
+	scanf("%s %d %lf", (*pp + *size - 1)->name, &(*pp + *size - 1)->age, &(*pp + *size - 1)->score);
+}
+
+add_student(&p, &size);
+```
 #### 第 4 步：删除学生
 
 这个非常适合练你之前的数组知识：
