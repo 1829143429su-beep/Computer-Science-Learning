@@ -223,15 +223,15 @@ change(&p);//main中的 p = NULL
 ```
 #### 练习2：二级指针
 用途：
-```
-malloc
+1.malloc：
+```c
 void create_student(Student** pp)
 {
     *pp = malloc(sizeof(Student));
 }
-
+```
 本质：
-
+```text
 NULL
  ↓
 新申请的内存
@@ -239,10 +239,9 @@ NULL
 也就是：
 
 让函数给外面的 p 赋一个新的地址。
-
-第二个：
-
-realloc
+```
+2.realloc:
+```c
 void resize(Student** pp)
 {
     Student* temp = realloc(*pp, new_size);
@@ -252,9 +251,9 @@ void resize(Student** pp)
         *pp = temp;
     }
 }
-
+```
 本质：
-
+```text
 旧地址
  ↓
 realloc
