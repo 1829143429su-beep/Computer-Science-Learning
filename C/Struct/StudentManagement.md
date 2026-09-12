@@ -168,10 +168,58 @@ int main()
 }
 ```
 
-解决:
+### 解决:二级指针
+```c
+Student* p;
+Student** pp = &p;
+```
+先回忆一级指针
+```c
+int a = 10;  
+int* p = &a; 
+//p=&a  指针变量p存放a的地址
+//*p=10 解引用得a的值
+//&p    指针p的地址
+```
+什么是二级指针？
+```c
+int a = 10;
+int* p = &a;
+int** pp = &p;
+//pp=&p  指针变量pp存放指针p的地址
+//*pp=p=&a  pp解引用得p的值，也就是a的地址
+//**pp=*p=a 
+```
+```text
+如果我们想让函数真正修改：main中的 p
+那函数就不能只拿到 p 的值。
+它需要拿到：p 自己的地址
+也就是：&p
+
+p 是 int*，所以 &p 的类型就是：int**
 ```
 
-这个 p 是函数自己的局部变量，外面的 p 不会跟着改变。
+
+
+二级指针让函数获得了修改 p 本身的能力。至于修改成什么，是函数里的代码决定的。
+```c
+void create_student(Student** pp)
+{
+    *pp = malloc(sizeof(Student));
+}
+
+main：
+Student* p = NULL;
+create_student(&p);
+```
+
+```c
+void change(int** pp)
+{
+    *pp = NULL;
+}
+调用：
+change(&p);//main中的 p = NULL
 ```
 #### 第 3 步：添加学生
 realloc() //实现“学生数量可以增加”。
