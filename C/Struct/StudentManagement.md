@@ -244,7 +244,7 @@ NULL
 ```c
 void resize(Student** pp)
 {
-    Student* temp = realloc(*pp, new_size);
+    Student* temp = realloc(*pp, sizeof(Student)*new_size);
 
     if (temp != NULL)
     {
@@ -290,14 +290,14 @@ void result2() {
 ```
 #### 第 3 步：添加学生
 realloc() //实现“学生数量可以增加”。
-例如：
-当前学生：3人
-        ↓
-添加第4人
-        ↓
-realloc()
-        ↓
-现在：4人
+
+为什么 realloc 扩容后，第 4 个学生的数据需要我们重新输入，而前 3 个不用重新输入？
+
+realloc(*pp, sizeof(Student) * new_size);//调整这块动态内存的大小，并尽可能保留原来的数据。
+
+realloc 不是“清空后重新申请”。
+
+它的核心作用是：改变已有动态内存块的大小，同时保留原有数据（在成功扩容的情况下）。
 
 #### 第 4 步：删除学生
 
