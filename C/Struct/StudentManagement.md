@@ -198,19 +198,19 @@ int** pp = &p;
 
 p 是 int*，所以 &p 的类型就是：int**
 ```
-
-
-
 二级指针让函数获得了修改 p 本身的能力。至于修改成什么，是函数里的代码决定的。
 ```c
 void create_student(Student** pp)
 {
-    *pp = malloc(sizeof(Student));
+    *pp = malloc(sizeof(Student)); //找到外面的 p，让 p 指向新申请的 Student 内存。
+    //p = malloc(sizeof(Student));
+//区别在于：create_student() 里面没有直接看到 main 的 p，借助二级指针pp修改 main 中的 p。
 }
 
-main：
-Student* p = NULL;
-create_student(&p);
+int main(){
+    Student* p = NULL;  //p 是一个 Student* 类型的变量，但是目前它还没有指向任何学生。
+    create_student(&p); //取指针p的地址，是Student**类型的
+}
 ```
 
 ```c
@@ -220,6 +220,74 @@ void change(int** pp)
 }
 调用：
 change(&p);//main中的 p = NULL
+```
+#### 练习2：二级指针
+用途：
+```
+malloc
+void create_student(Student** pp)
+{
+    *pp = malloc(sizeof(Student));
+}
+
+本质：
+
+NULL
+ ↓
+新申请的内存
+
+也就是：
+
+让函数给外面的 p 赋一个新的地址。
+
+第二个：
+
+realloc
+void resize(Student** pp)
+{
+    Student* temp = realloc(*pp, new_size);
+
+    if (temp != NULL)
+    {
+        *pp = temp;
+    }
+}
+
+本质：
+
+旧地址
+ ↓
+realloc
+ ↓
+新地址
+
+也就是：
+
+让函数更新外面的 p，使它指向扩容后的内存。
+```
+
+```c
+void create_student(Student** pp) {
+	*pp = malloc(sizeof(Student));
+	if (*pp == NULL) {
+		printf("申请失败");
+	}
+}
+void result2() {
+	Student* p = NULL;
+	create_student(&p);
+	printf("请输入该学生的信息：");
+	scanf("%s %d %lf", p->name, &p->age, &p->score);
+	free(p);
+	p = NULL;
+}
+```
+易错：
+```text
+函数参数已经有：Student** pp
+所以函数里面再写：Student* pp
+相当于：同一个作用域里，把 pp 又定义了一次。
+这是错误的。
 ```
 #### 第 3 步：添加学生
 realloc() //实现“学生数量可以增加”。
