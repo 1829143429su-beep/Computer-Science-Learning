@@ -305,12 +305,20 @@ realloc 不是“清空后重新申请”。
 它的核心作用是：改变已有动态内存块的大小，同时保留原有数据（在成功扩容的情况下）。
 
 ##### 练习3：添加学生,每次加1人
+为了保证只有 realloc 成功，学生数量 size 才真正增加，需要两个变量
 ```c
-void add_student(Student** pp,int* size) { //main中的size也要同步改
-	(*size)++;//每次加1人
-	Student* temp = realloc(*pp, sizeof(Student) * (*size));
+*size    = 3   ← 暂时不变
+new_size = 4   ← 用来尝试扩容
+如果成功，*size = new_size;
+```
+
+```c
+void add_student(Student** pp,int* size) {
+	int new_size = *size + 1;
+	Student* temp = realloc(*pp, sizeof(Student) * new_size);
 	if (temp != NULL) {
 		*pp = temp;
+		*size = new_size;
 	}
 	else
 	{
@@ -324,22 +332,46 @@ void add_student(Student** pp,int* size) { //main中的size也要同步改
 add_student(&p, &size);
 ```
 #### 第 4 步：删除学生
-
-这个非常适合练你之前的数组知识：
-
-Tom   80
-Jack  90   ← 删除
-Lucy  95
-Bob   85
+思考删除的本质
+```text
+0  Tom   80
+1  Jack  90   ← 删除
+2  Lucy  95
+3  Bob   85
 
 删除 Jack 后：
-
-Tom   80
-Lucy  95
-Bob   85
-
+0  Tom   80
+1  Lucy  95
+2  Bob   85
+你并不需要真的把内存中那个人“擦掉”。
 本质上就是把后面的元素向前移动。
 
+也就是：
+p[2] → p[1]
+p[3] → p[2]
+
+然后：
+size: 4 → 3
+```
+
+你需要一个变量记录要删除的下标 index
+```
+目前如果：index = -1;
+或者：index >= *size;
+就可能越界访问。
+所以你下一步自己加一个下标合法性检查，放在 for 循环之前：
+if (index < 0||index >= *size)
+{
+    printf("下标错误\n");
+    return;
+}
+```
+
+##### 根据姓名删除学生
+```text
+先根据姓名找到下标
+再移除该下标的学生
+```
 #### 第 5 步：修改 / 查找 / 显示 / 排序
 
 这些你其实已经会了，只是把：
@@ -352,6 +384,17 @@ Student* students;
 
 所以这部分是知识迁移。
 
+##### 按姓名修改年龄和成绩
+```text
+你写了：
+void change_student_by_name(Student* p, int size, const char* name, int* age)
+但函数内部根本没有使用 age：
+scanf("%d %lf", &(p+index)->age, &(p+index)->score);
+
+你已经直接修改：
+(p + index)->age
+所以 int* age 可以删掉。
+```
 #### 第 6 步：保存文件
 
 最后再加入：
