@@ -395,8 +395,52 @@ scanf("%d %lf", &(p+index)->age, &(p+index)->score);
 (p + index)->age
 所以 int* age 可以删掉。
 ```
-#### 第 6 步：保存文件
 
+##### 按成绩从高到低排序，然后显示排序后的学生
+冒泡
+
+#### 第六步：创建菜单
+```c
+while (1)
+{
+    menu();
+
+    int choice;
+    scanf("%d", &choice);
+
+    switch (choice)
+    {
+        // ...
+    }
+}
+```
+
+设置一个退出条件
+```c
+int running = 1;//退出while
+
+while (running)
+{
+    menu();
+
+    // ...
+
+    case 0:
+        running = 0;
+        break;//退出switch
+}
+```
+
+不过这里会出现一个 C 语言问题：
+```
+你在不同的 case 里重复声明了：
+char name[20];
+case 不是自动创建独立作用域的，所以这些 name 实际上可能属于同一个 switch 作用域，会产生重复定义问题。
+推荐你给每个 case 加 {}：
+这样每个 {} 都形成自己的作用域
+```
+#### 第 6 步：保存文件
+```
 最后再加入：
 
 fopen()
@@ -406,9 +450,37 @@ fclose()
 这样才真正形成一个小型 C 项目。
 
 ```
-```
-```
-```
-```
+
+#### 易错
+```text
+1.缺少 <string.h>
+你用了：strcmp(...)
+需要加：
+#include<string.h>
+否则 strcmp 没有正确声明。
 ```
 
+```text
+2.free(p) 现在实际上执行不到
+你写的是：
+while(1){
+case 0:
+    return 0;
+}
+而：
+free(p);
+p = NULL;
+return 0;
+在 while(1) 后面。
+
+也就是说你现在：
+选择 0 -> return 0 -> main结束
+
+需要改成：
+选择 0 -> free(p) -> main结束
+```
+```text
+3.create_student() 申请失败后，main 还会继续
+需要解决：如果 malloc 失败，怎么让 main() 知道失败了？
+
+```
