@@ -560,6 +560,8 @@ scanf()       ← 从键盘读取
 
 fscanf(fp)    ← 从 fp 指向的文件读取
 
+fscanf() 的返回值表示：成功读取了几个数据项。
+
 格式：
 ```c
 Student s;
@@ -599,12 +601,14 @@ void save_students(Student* p, int size)
 
 问题：
 ```text
-如果 students.txt 里面有 10 个学生，而你一开始只有 Student* p = NULL，
+1.如果 students.txt 里面有 10 个学生，而你一开始只有 Student* p = NULL；int size=0
 你准备怎么让 p 逐渐装下这 10 个学生？
+
+realloc（）
+//二级指针
+
+2.还不能判断“文件有没有读完”。
 ```
-
-
-
 ```
 
 ```
