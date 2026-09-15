@@ -439,17 +439,6 @@ case 不是自动创建独立作用域的，所以这些 name 实际上可能属
 推荐你给每个 case 加 {}：
 这样每个 {} 都形成自己的作用域
 ```
-#### 第 6 步：保存文件
-```
-最后再加入：
-
-fopen()
-fprintf()
-fclose()
-
-这样才真正形成一个小型 C 项目。
-
-```
 
 #### 易错
 ```text
@@ -482,5 +471,140 @@ return 0;
 ```text
 3.create_student() 申请失败后，main 还会继续
 需要解决：如果 malloc 失败，怎么让 main() 知道失败了？
+
+现在阶段的方法是：让函数返回成功或失败状态。
+
+把：void create_student(...)
+改成：int create_student(...)
+约定：
+返回 1 → 成功
+返回 0 → 失败
+```
+
+
+### 第 6 步：文件操作
+```c
+fopen()    → 打开/创建文件
+fprintf()  → 往文件写数据
+fscanf()   → 读取文件中的数据
+fclose()   → 关闭文件
+
+启动程序
+  ↓
+读取之前保存的学生
+  ↓
+正常增删改查
+  ↓
+退出
+  ↓
+把学生数据保存到文件
+
+这样才真正形成一个小型 C 项目。
+```
+#### 1.fopen()、fclose()
+练习1：创建并打开文件
+
+目标：程序运行后，在当前项目目录创建一个 students.txt，并判断文件是否打开成功。
+```c
+FILE* fp = fopen("students.txt", "w");
+if (fp == NULL) {
+	printf("打开失败\n");
+	return 1;
+}
+else {
+	printf("打开成功\n");
+}
+
+fclose(fp);
+```
+```text
+"w" 表示写入模式：
+文件不存在 → 创建
+文件存在 → 原来的内容会被清空
+```
+
+#### 2.fprint() 输出到 fp 指向的文件
+printf(...) → 输出到控制台
+
+fprintf(fp, ...) → 输出到 fp 指向的文件
+
+格式：
+```c
+Student s = { "Tom", 20, 90.5 };
+FILE* fp = fopen("students.txt", "w");
+fprintf(fp,"%s %d %.1f\n",s.name,s.age,s.score);
+```
+
+练习：写入 3 个学生
+```c
+Student students[3] = {
+{"Tom", 20, 90.5},
+{"Jack", 21, 85.0},
+{"Lucy", 19, 95.5}
+};
+for (int i = 0; i < 3; i++) {
+	fprintf(fp, "%s %d %.1f\n", students[i].name, students[i].age, students[i].score);
+}
+```
+
+#### 3.文件打开模式（mode）
+```text
+| 模式|  含义   | 文件不存在  | 原内容 |
+| "r" |  读取   | 打开失败   | 保留   |
+| "w" |  写入   | 创建文件   | 清空   |
+| "a" | 追加写入 | 创建文件  | 保留   |
+```
+
+#### 4.fscanf(fp, ...)
+scanf()       ← 从键盘读取
+
+fscanf(fp)    ← 从 fp 指向的文件读取
+
+格式：
+```c
+Student s;
+FILE* fp = fopen("student.txt", "r");
+fscanf(fp, "%s %d %lf", s.name,&s.age,&s.score);
+fclose(fp);//读取完也要关闭文件
+```
+练习：读取 3 个学生
+```c
+Student students[3]；
+for (int i = 0; i < 3; i++) {
+	fscanf(fp, "%s %d %lf\n", students[i].name, &students[i].age, &students[i].score);
+}
+```
+
+#### 写入学生管理系统
+```text
+把现在的：固定 3 个学生 → 写文件 → 读文件
+变成：
+Student* p 动态学生数组 → 保存当前所有学生 → 程序退出前保存 → 下次启动时读取
+```
+
+
+1.文件保存函数
+```c
+void save_students(Student* p, int size)
+{
+    // 1. 打开 students.txt
+    // 2. 判断是否打开成功
+    // 3. 循环，把所有学生写进去
+    // 4. 关闭文件
+}
+```
+
+2.从文件读取学生
+你事先不知道文件里有多少个学生。
+
+问题：
+```text
+如果 students.txt 里面有 10 个学生，而你一开始只有 Student* p = NULL，
+你准备怎么让 p 逐渐装下这 10 个学生？
+```
+
+
+
+```
 
 ```
