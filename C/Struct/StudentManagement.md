@@ -501,7 +501,7 @@ fclose()   → 关闭文件
 
 这样才真正形成一个小型 C 项目。
 ```
-#### 1.fopen()、fclose()
+#### 1.fopen():打开或创建、  fclose()
 练习1：创建并打开文件
 
 目标：程序运行后，在当前项目目录创建一个 students.txt，并判断文件是否打开成功。
@@ -523,7 +523,7 @@ fclose(fp);
 文件存在 → 原来的内容会被清空
 ```
 
-#### 2.fprint() 输出到 fp 指向的文件
+#### 2.fprint(): 输出到 fp 指向的文件
 printf(...) → 输出到控制台
 
 fprintf(fp, ...) → 输出到 fp 指向的文件
@@ -571,10 +571,12 @@ fclose(fp);//读取完也要关闭文件
 ```
 练习：读取 3 个学生
 ```c
-Student students[3]；
+Student stu[3]；//为了和students区分，读取需要新的数组
 for (int i = 0; i < 3; i++) {
-	fscanf(fp, "%s %d %lf\n", students[i].name, &students[i].age, &students[i].score);
+	fscanf(fp, "%s %d %lf\n", stu[i].name, &stu[i].age, &stu[i].score);
 }
+print_students(stu,3);
+fclose(fp);
 ```
 
 #### 写入学生管理系统
@@ -596,19 +598,142 @@ void save_students(Student* p, int size)
 }
 ```
 
-2.从文件读取学生
+2.从文件读取学生，把文件中的所有学生追加到当前数组。
+```c
+void load_students(Student**pp,int* size) {
+```
 你事先不知道文件里有多少个学生。
+
 
 问题：
 ```text
 1.如果 students.txt 里面有 10 个学生，而你一开始只有 Student* p = NULL；int size=0
 你准备怎么让 p 逐渐装下这 10 个学生？
-
-realloc（）
-//二级指针
+realloc（） //二级指针
 
 2.还不能判断“文件有没有读完”。
-```
+根据数据项是不是3判断
+int result = fscanf(fp, "%s %d %lf", (*pp + *size)->name, &(*pp + *size)->age, &(*pp + *size)->score);
+
+3.最终会重复读取：
+原因：每次都从p[*size]开始往后添加。所以它天然就是“追加”。
+解决：用文件内容重新建立当前学生数组，而不是追加。
+这时候 load_students() 开始前就应该变成：
+size = 0;
+p = NULL;
+//注意：
+如果原来：p → [Tom][Jack]
+你直接：*pp = NULL; 原来的内存地址就丢了。
+这会造成：内存泄漏
+//正确思路应该是：
+原来的学生数据
+        ↓
+     free(p)
+        ↓
+   p = NULL
+   size = 0
+        ↓
+重新从文件读取
 ```
 
+#### 设计
+```text
+程序启动
+p = NULL
+size = 0
+       ↓
+load_students()
+       ↓
+读取文件
+用户添加
+add_student()
+       ↓
+size 增加
+用户删除
+delete_student()
+       ↓
+size 减少
+用户修改
+size 不变
+用户点击「7.保存」
+当前 p
+  ↓
+写入 students.txt
+用户点击「8.读取」
+当前 p
+  ↓
+free()
+  ↓
+p = NULL
+size = 0
+  ↓
+重新读取 students.txt
+
+这样就不会重复。
 ```
+
+
+### 总结
+```text
+                学生管理系统
+                     │
+        ┌────────────┼────────────┐
+        ↓            ↓            ↓
+     学生数据      功能操作       文件
+        │            │            │
+ Student* p      添加/删除/修改   保存/读取
+ int size        查找/排序
+```
+
+```text
+Student
+│
+├── 动态内存
+│   ├── create_student()   ← malloc练习
+│   ├── revise()           ← realloc练习
+│   └── add_student()      ← 实际使用
+│
+├── 基本操作
+│   ├── add_student()
+│   ├── delete_student()
+│   ├── find_student()
+│   ├── change_student_by_name()
+│   └── print_students()
+│
+├── 高级操作
+│   └── sort_by_score()
+│
+└── 文件
+    ├── save_students()
+    └── load_students()
+```
+
+
+最终main()流程
+```text
+程序启动
+   ↓
+p = NULL
+size = 0
+   ↓
+load_students(&p, &size)
+   ↓
+显示菜单
+   ↓
+用户选择
+   ├── 1 添加
+   ├── 2 删除
+   ├── 3 修改
+   ├── 4 查找
+   ├── 5 显示
+   ├── 6 排序
+   ├── 7 保存
+   ├── 8 读取
+   └── 0 退出
+             ↓
+          free(p)
+```
+
+
+
+
