@@ -619,6 +619,7 @@ students.txt
 realloc   结束
  ↓
 (*pp)[*size] = stu //把临时学生复制到动态数组最后一个位置
+相当于p[*size]
  ↓
 (*size)++
 
