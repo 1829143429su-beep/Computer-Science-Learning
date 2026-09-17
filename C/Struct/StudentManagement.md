@@ -579,6 +579,7 @@ print_students(stu,3);
 fclose(fp);
 ```
 
+
 #### 写入学生管理系统
 ```text
 把现在的：固定 3 个学生 → 写文件 → 读文件
@@ -603,6 +604,23 @@ void save_students(Student* p, int size)
 void load_students(Student**pp,int* size) {
 ```
 你事先不知道文件里有多少个学生。
+先判断再申请空间
+```text
+             Student stu
+                  ↓
+             fscanf()
+                  ↓
+        是否成功读取一个学生？
+             ↓           ↓
+            是           否
+             ↓           ↓
+          realloc       结束
+             ↓
+       放入动态数组
+             ↓
+           size++
+
+```
 
 
 问题：
@@ -612,7 +630,7 @@ void load_students(Student**pp,int* size) {
 realloc（） //二级指针
 
 2.还不能判断“文件有没有读完”。
-根据数据项是不是3判断
+根据数据项是不是3 判断
 int result = fscanf(fp, "%s %d %lf", (*pp + *size)->name, &(*pp + *size)->age, &(*pp + *size)->score);
 
 3.最终会重复读取：
@@ -625,6 +643,7 @@ p = NULL;
 如果原来：p → [Tom][Jack]
 你直接：*pp = NULL; 原来的内存地址就丢了。
 这会造成：内存泄漏
+
 //正确思路应该是：
 原来的学生数据
         ↓
@@ -635,7 +654,18 @@ p = NULL;
         ↓
 重新从文件读取
 ```
+```c
+case 8:
+    free(p);
+    p = NULL;
+    size = 0;
 
+    load_students(&p, &size);
+
+    printf("读取到 %d 个学生\n", size);
+    print_students(p, size);
+    break;
+```
 #### 设计
 ```text
 程序启动
