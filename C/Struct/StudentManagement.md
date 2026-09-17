@@ -606,19 +606,21 @@ void load_students(Student**pp,int* size) {
 你事先不知道文件里有多少个学生。
 先判断再申请空间
 ```text
-             Student stu
-                  ↓
-             fscanf()
-                  ↓
-        是否成功读取一个学生？
-             ↓           ↓
-            是           否
-             ↓           ↓
-          realloc       结束
-             ↓
-       放入动态数组
-             ↓
-           size++
+students.txt
+     ↓
+ Student stu 临时变量
+     ↓
+ fscanf()
+     ↓
+读取成功？
+  ↓       ↓
+ 是       否
+ ↓         ↓
+realloc   结束
+ ↓
+(*pp)[*size] = stu //把临时学生复制到动态数组最后一个位置
+ ↓
+(*size)++
 
 ```
 
@@ -666,6 +668,23 @@ case 8:
     print_students(p, size);
     break;
 ```
+```text
+4.加（）
+case 3:
+    char name1[20];
+
+最好以后写成：
+
+case 2: {
+    char name[20];
+
+    ...
+    break;
+}
+这样每个 case 有自己的作用域。
+```
+
+
 #### 设计
 ```text
 程序启动
