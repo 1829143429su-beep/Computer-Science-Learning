@@ -886,3 +886,10 @@ size++             │
 这比你现在“每添加一个学生就 realloc 一次”合理得多。
 
 ```
+
+#### 4.删除学生之后，要不要修改 capacity？
+你现在的 delete_student() 是：
+
+(*size)--;
+
+但没有修改 capacity。
