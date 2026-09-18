@@ -480,7 +480,7 @@ return 0;
 返回 1 → 成功
 返回 0 → 失败
 ```
-
+4.break 可以跳出 while，但如果 break 写在 switch 里面，它跳出的就是 switch，不是外面的 while。
 
 ### 第 6 步：文件操作
 ```c
