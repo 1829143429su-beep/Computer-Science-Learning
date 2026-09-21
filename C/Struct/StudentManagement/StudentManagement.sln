@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.37502.11 d17.14
+VisualStudioVersion = 17.14.37502.11
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StudentManagement", "StudentManagement.vcxproj", "{BD855248-D287-4C55-B974-72EB3673715D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinkedList", "..\..\linked list\LinkedList\LinkedList.vcxproj", "{657863A8-CA26-4247-938B-99CE5F066222}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{BD855248-D287-4C55-B974-72EB3673715D}.Release|x64.Build.0 = Release|x64
 		{BD855248-D287-4C55-B974-72EB3673715D}.Release|x86.ActiveCfg = Release|Win32
 		{BD855248-D287-4C55-B974-72EB3673715D}.Release|x86.Build.0 = Release|Win32
+		{657863A8-CA26-4247-938B-99CE5F066222}.Debug|x64.ActiveCfg = Debug|x64
+		{657863A8-CA26-4247-938B-99CE5F066222}.Debug|x64.Build.0 = Debug|x64
+		{657863A8-CA26-4247-938B-99CE5F066222}.Debug|x86.ActiveCfg = Debug|Win32
+		{657863A8-CA26-4247-938B-99CE5F066222}.Debug|x86.Build.0 = Debug|Win32
+		{657863A8-CA26-4247-938B-99CE5F066222}.Release|x64.ActiveCfg = Release|x64
+		{657863A8-CA26-4247-938B-99CE5F066222}.Release|x64.Build.0 = Release|x64
+		{657863A8-CA26-4247-938B-99CE5F066222}.Release|x86.ActiveCfg = Release|Win32
+		{657863A8-CA26-4247-938B-99CE5F066222}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
