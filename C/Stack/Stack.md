@@ -278,6 +278,117 @@ void InitStack(LinkStack* s) {
 }
 ```
 
+#### 2.入栈
+```c
+//2.入栈
+bool Push(LinkStack* s, int data) {
+	// 1. 创建新节点
+	Node* newNode = malloc(sizeof(Node));
+
+
+	// 2. 判断内存申请是否成功
+	if (newNode != NULL) {
+		printf("内存申请成功\n");
+	}
+	else {
+		return false;
+	}
+
+	// 3. 给新节点赋值
+	newNode->data = data;
+
+	// 4. 让新节点指向原来的栈顶
+	newNode->next = s->top;
+
+	// 5. 更新栈顶指针
+	s->top = newNode;
+
+	return true;
+}
+```
+
+#### 3.出栈
+```c
+bool Pop(LinkStack* s,int*e) {
+	// 1. 判断栈是否为空
+	if (s->top == NULL) {
+		printf("栈空\n");
+		return false;
+	}
+
+   // 2. 保存原来的栈顶节点
+	Node* temp = s->top;
+
+   // 3. 将栈顶节点的数据传给 e
+	*e = s->top->data;
+
+   // 4. 更新栈顶指针
+	s->top = temp->next;
+
+   // 5. 释放原栈顶节点
+	free(temp);
+
+	printf("出栈成功，元素为：%d\n", *e);
+	return true;
+}
+```
+
+#### 4.获取栈顶元素
+```c
+bool GetTop(LinkStack* s, int* e) {
+	// 判断栈是否为空
+	if (s->top == NULL) {
+		printf("栈空\n");
+		return false;
+	}
+	*e = s->top->data;
+	return true;
+```
+
+#### 5.求栈长
+
+#### 6.判空
+```c
+bool StackEmpty(LinkStack* s) {
+    if (s->top == NULL) {
+        printf("栈空\n");
+        return true;
+    }
+    else {
+        printf("栈非空\n");
+        return false;
+    }
+}
+```
+
+#### 7.清空
+释放链式栈中的所有节点，并将栈恢复为空栈
+```c
+void ClearStack(LinkStack* s) {
+	if (StackEmpty(s)) {
+		return;
+	}
+
+	Node* cur = s->top;
+	//遍历
+	while (cur) {
+		Node* temp = cur;
+		cur=cur->next;
+		free(temp);
+	}
+	s->top = NULL;
+	printf("栈已为空\n");
+}
+```
+
+
+```
+```
+
+```
+
+```
+
 
 ```
 ```
@@ -286,10 +397,17 @@ void InitStack(LinkStack* s) {
 ```
 ```
 
+```
+
+```
 
 
+```
+```
 
 
+```
+```
 
 
 
