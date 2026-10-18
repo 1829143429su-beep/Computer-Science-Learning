@@ -193,15 +193,27 @@ bool DeQueue(SqQueue* q, int* e) {
 ```
 
 #### 4.获取队头元素
-```
-```
-
-```
+```c
+bool GetHead(SqQueue*q,int*e)
 ```
 
+#### 5.计算队列长度 
+```c
+int QueueLength(SqQueue* q) {
+	int length =q->rear-q->front ;//rear是队尾元素下一个位置的下标
+	printf("队长为%d", length);
+	return length;
+}
 ```
+#### 6.判空
+```c
+bool QueueEmpty(SqQueue* q) {
+    return q->front == q->rear;
+}
 ```
 
+#### 7.遍历
+注意：遍历时不能修改 q->front，否则会改变队列的状态。
 ```
 ```
 
