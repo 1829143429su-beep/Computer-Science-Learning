@@ -216,10 +216,182 @@ bool QueueEmpty(SqQueue* q) {
 注意：遍历时不能修改 q->front，否则会改变队列的状态。
 ```
 ```
+#### 8.清空
+```c
+void ClearQueue(SqQueue* q) {
+    q->front = q->rear;
+    printf("队列清空成功！\n");
+}
+```
+普通顺序队列即使出队了，front 之前的数组空间也无法直接复用。
+
+#### 9.判断队列是否已满
+```c
+bool QueueFull(SqQueue* q) {
+    return q->rear == MAXSIZE;
+}
+```
+
+
+### 循环队列
+```text
+循环队列的思路：让数组首尾相连。 当 rear 到达最后一个下标之后，就回到下标 0，继续利用空出来的位置。
+```
+
+理解取模运算 %
+```text
+假设数组长度为 5：
+表达式	结果
+0 % 5	0
+1 % 5	1
+4 % 5	4
+5 % 5	0
+6 % 5	1
+所以：
+rear = (rear + 1) % MAXSIZE;
+就能让 rear 从 4 回到 0，实现循环。
+```
+
+判空/判满
+```c
+队空： front == rear；
+队满： (rear + 1) % MAXSIZE == front；
+```
+
+#### 结构体定义
+```c
+#define MAXSIZE 5
+
+typedef struct {
+	int data[MAXSIZE];
+	int front;//数组下标
+	int rear;//数组下标
+}CircleQueue;
+```
+
+#### 1.初始化
+```c
+void InitCircleQueue(CircleQueue* q)
+{
+    q->front = 0;
+    q->rear = 0;
+}
+```
+#### 2.判空
+```c
+bool CircleQueueEmpty(CircleQueue* q) {
+    return q->front == q->rear;
+}
+```
+当 front == rear 时返回 true，否则返回 false。
+
+#### 3. 判断队满
+```c
+// 3. 判断队列是否已满
+bool CircleQueueFull(CircleQueue* q) {
+    return (q->rear + 1) % MAXSIZE == q->front;
+}
+
+//注意：循环队列需要预留一个数组位置。
+```
+
+#### 4. 获取队列长度
+```c
+int CircleQueueLength(CircleQueue* q);
+//提示：由于下标可能绕回数组开头，需要使用取模运算。
+```
+
+#### 5. 入队
+```c
+bool EnCircleQueue(CircleQueue* q, int value);
+```
+```text
+要求：
+- 队满时，输出提示信息并返回 false。
+- 未满时，将元素放到 rear 对应的位置。
+- 更新 rear，返回 true。
+```
+
+#### 6. 出队
+```c
+bool DeCircleQueue(CircleQueue* q, int* e);
+```
+```text
+要求：
+- 队空时，输出提示信息并返回 false。
+- 否则将队头元素保存到 *e。
+- 更新 front，返回 true。
+```
+
+#### 7. 获取队头元素
+```c
+bool GetCircleQueueHead(CircleQueue* q, int* e);
+```
+```text
+要求：
+- 队空时返回 false。
+- 否则将队头元素保存到 *e。
+- 不能修改 front，因为这不是出队操作。
+```
+
+#### 8. 遍历队列
+```c
+//8. 遍历队列
+void TraverseCircleQueue(CircleQueue* q) {
+	if (CircleQueueEmpty(q)) {
+		printf("队空\n");
+		return;
+	}
+	int order = q->front;
+	while (order!=q->rear) {
+		printf("%d ", q->data[order]);
+		order=(order+1)%MAXSIZE;
+	}
+	printf("\n遍历完成\n");
+}
+```
+```text
+要求：
+- 队空时输出“队列为空”。
+- 否则按队头到队尾的顺序输出元素。
+- 遍历时使用局部变量，不能修改队列本身的 front 和 rear。
+```
+
+#### 9. 清空队列
+```c
+void ClearCircleQueue(CircleQueue* q);
+//循环队列使用静态数组，不需要 free()，只需让队列恢复为空的状态。
+```
+
+
+### 对比
+```text
+对比项	               链队列	            普通顺序队列	        循环队列
+存储方式	               链表节点	                连续数组	        连续数组
+入队位置	           队尾节点后面	              rear 位置  	   rear 位置
+出队方式	            删除队头节点	                front++	      front = (front+1)%MAXSIZE
+是否需要动态分配内存	通常需要	不需要	           不需要
+是否可能假溢出	  不会因数组位置耗尽而假溢出  	会	             解决了这种假溢出
+主要限制          	内存分配与指针管理	数组尾部空间不能重复利用	预留一个空位来区分队空和队满
+```
+
+
 
 ```
 ```
 
+```
+
+```
+```
+
+```
+```
+
+```
+```
+
+```
 ```
 ```
 
