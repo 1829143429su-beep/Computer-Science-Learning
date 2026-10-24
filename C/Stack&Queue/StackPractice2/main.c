@@ -231,13 +231,6 @@ void menu(LinkStack* s) {
 
 
 
-
-
-
-
-
-
-
 int main() {
 	LinkStack s;
 	init(&s);

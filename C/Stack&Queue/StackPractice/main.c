@@ -270,7 +270,7 @@ bool ReverseString(char str[]) {
 }
 
 
-//7. 括号匹配检查
+//7. 括号（）匹配检查
 bool BracketMatch(char str[])
 {
 	SqStack s;
@@ -305,6 +305,49 @@ bool BracketMatch(char str[])
 		return false;
 	}
 }
+
+bool BracketCheck(char str[], int length) {
+	SqStack s;
+	init_stack(&s);
+
+	for (int i = 0; i < length; i++) {
+		//遇到左括号，入栈
+		if (str[i] == '(' || str[i] == '[' || str[i] == '{') {
+			if (!Push(&s, str[i])) {
+				return false;
+			}
+		}
+		else if (str[i] == ')' || str[i] == ']' || str[i] == '}') {//遇到右括号
+			//如果栈空，说明右括号多了
+			if (StackEmpty(s)) {
+				return false;
+			}
+			//如果栈非空，弹出左括号(栈顶元素)
+			char topElem;
+			if (!Pop(&s, &topElem)) {
+				return false;
+			}
+
+			//判断左右括号是否一致
+			if (str[i] == ')' && topElem != '(') {
+				return false;
+			}
+			if (str[i] == ']' && topElem != '[') {
+				return false;
+			}
+			if (str[i] == '}' && topElem != '{') {
+				return false;
+			}
+		}
+	}
+
+	//检查完全部括号后，看栈中还有没有元素
+	// 如果有，说明左括号多了
+	return StackEmpty(s);
+}
+
+
+
 
 //8. 用栈实现十进制转二进制
 //余数入栈
