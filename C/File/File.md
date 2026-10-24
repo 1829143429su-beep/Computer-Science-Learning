@@ -298,9 +298,8 @@ fclose(fp);
 ```c
 //假设它们保存在数组 Contact contacts[3] 中
 Contact contacts[3];
-fread(contacts, sizeof(Contact), 3, fp);//修改数据块数量，数组的地址不需要&
 
-if (fread(contacts, sizeof(Contact), 3, fp) == 3) {
+if (fread(contacts, sizeof(Contact), 3, fp) == 3) {//修改数据块数量，数组的地址不需要&
     printf("成功读取 3 个联系人！\n");
 }
 else {
@@ -330,6 +329,126 @@ WangWu	    22    111222333
 注意： 写入和读取都要检查文件是否打开成功；读取前要重新打开文件。
 ```
 ```
+写入后，先fclose(fp)，再打开文件，且需要fp保存一遍
+fopen("contact.dat", "rb") 会返回一个新的文件指针，仍旧需要保存它；
+否则fp 仍然是已经关闭的文件指针。
+即：fp=fopen("contact.dat", "rb")
+```
+```c
+int main(void) {
+	//数组初始化
+	Contact c[3] = {
+		{"ZhangSan",20,"123456789"},
+		{"LiSi",21,"987654321"},
+		{"WangWu",22,"111222333"}
+	};
+
+	FILE* fp = fopen("contact.dat", "wb");
+	if (fp == NULL) {
+		printf("文件打开失败\n");
+		return 1;
+	}
+
+	if (fwrite(c, sizeof(Contact), 3, fp) == 3) {
+		printf("成功写入3个联系人\n");
+	}
+	else {
+		printf("写入失败或者全部未写入\n");
+	}
+
+	fclose(fp);
+	fp=fopen("contact.dat","rb");
+	if (fread(c, sizeof(Contact), 3, fp) == 3) {
+		printf("成功读取3个联系人\n");
+		for (int i = 0; i < 3; i++) {
+			printf("姓名：%s，年龄：%d，电话：%s\n",
+				c[i].name, c[i].age, c[i].phone);
+		}
+	}
+	else {
+		printf("读取人数不足3个\\n");
+	}
+
+	fclose(fp);
+	return 0;
+}
+```
+
+```text
+函数	     作用	            示例
+fprintf()	按指定格式写入文本	fprintf(fp, "%s %d\n", name, age);
+fscanf()	按指定格式读取文本	fscanf(fp, "%19s %d", name, &age);
+fwrite()	将内存中的数据块写入文件	fwrite(c, sizeof(Contact), 3, fp);
+fread()	    从文件读取数据块到内存	fread(c, sizeof(Contact), 3, fp);
+```
+
+
+#### 练习：文件操作的错误处理
+```text
+假设你要读取一个文件：
+FILE* fp = fopen("contact.dat", "rb");
+fread() 需要通过文件指针 fp 找到要读取的文件；
+
+如果 fopen() 失败，fp 就是 NULL，此时没有有效的文件指针可供 fread() 使用，继续读取可能导致程序出错。
+if (fp == NULL) {
+    printf("文件打开失败！\n");
+    return 1;
+}
+
+如果 fopen() 成功，文件也可能是空的，或者数据不足。之后还需要检查 fread() 的返回值。
+if (fread(&c, sizeof(Contact), 3, fp) == 3) 
+```
+
+
+### 项目——通讯录
+结构体、动态内存、文件操作
+```text
+1.添加联系人
+2.显示联系人
+3.查找联系人
+4.删除联系人
+5.修改联系人
+6.保存联系人到文件，并在下次运行时读取
+```
+
+#### 1.结构体
+```text
+写出 Contact 结构体的定义，以及一个表示通讯录的结构体 AddressBook。
+
+提示：
+- Contact 表示一个联系人。
+- AddressBook 表示整个通讯录。
+- 通讯录需要保存联系人数组的指针，以及当前联系人的数量。
+- 联系人数组使用动态内存分配，先不设置 capacity。
+```
+
+#### 2.初始化
+```c
+//初始化函数需要修改原来 AddressBook 变量中的成员，所以传入它的地址。
+void init_addressbook(AddressBook* pb) {
+    pb->contacts = NULL;
+    pb->size = 0;
+}
+```
+
+#### 3.添加第一个联系人
+```c
+//添加第一个联系人时，需要为联系人申请内存。
+//
+pb->contacts->name
+strcpy(pb->contacts->name, "ZhangSan");
+strcpy(pb->contacts->phone, "123456789");
+```
+
+```text
+如果要让用户输入姓名、年龄和电话，应该使用 scanf()，而不是 fscanf()；
+这取决于数据从哪里来：
+scanf()：从键盘读取用户输入的数据。
+fscanf()：从指定文件读取数据。
+
+```
+```
+```
 ```
 
 
@@ -338,8 +457,35 @@ WangWu	    22    111222333
 ```
 ```
 ```
+
+
 ```
 ```
+```
+```
+```
+
+
+```
+```
+```
+```
+```
+
+
+```
+```
+```
+```
+```
+
+
+```
+```
+```
+```
+```
+
 
 
 
