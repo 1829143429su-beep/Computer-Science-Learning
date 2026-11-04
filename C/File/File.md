@@ -500,46 +500,294 @@ int add_contact(AddressBook* pb) {
 	
 	return 1;
 }
-
-
-```
-```
-
-
-```
-```
-```
-```
-```
-
-
-```
-```
-```
-```
-```
-
-
-```
-```
-```
-```
-```
-
-
-```
-```
-```
-```
-```
-
-
-```
-```
-```
-```
 ```
 
 
 
+## 模块化编程
+这一阶段主要学习三个文件如何协同工作：
+```text
+main.c
+主函数：调用其他模块提供的功能
 
+student.h
+声明函数、定义类型
+
+student.c
+实现具体功能
+```
+
+### 学习：
+```text
+1.理解 .h 和 .c 的区别
+学习函数声明与函数定义分离
+2.学习 #include 和头文件保护
+3.学习多个 .c 文件如何编译、链接
+4.学习全局变量、extern、static
+将已有的小程序拆分成多个文件
+```
+
+#### 1.举例说明
+假设我们有一个计算两个整数之和的函数：
+
+##### student.h
+```c
+int Add(int a, int b);
+```
+##### student.c
+```c
+#include "student.h"
+
+int Add(int a, int b) {
+    return a + b;
+}
+```
+##### main.c
+```c
+#include <stdio.h>
+#include "student.h"
+
+int main(void) {
+    int result = Add(10, 20);
+    printf("结果：%d\n", result);
+    return 0;
+}
+```
+```text
+student.h 告诉其他文件：存在一个 Add() 函数，它接收两个整数并返回一个整数。
+student.c 真正编写 Add() 的功能。
+main.c 只需要知道函数的声明，就可以调用它。
+```
+
+##### 问题1：为什么一个带分号，一个不需要；二者区别
+```text
+int Add(int a, int b);
+函数声明以分号结束，表示声明到此结束。
+
+int Add(int a, int b) { return a + b; }
+函数定义以 {} 包含函数体，右花括号 } 表示定义结束，不需要再加分号。
+```
+
+##### 问题2：为什么 main.c 和 student.c 都要写 #include "student.h"
+```text
+1.在 main.c 中写：#include "student.h"
+就能引入 student.h 中的函数声明,然后可以调用 student.c 中的 Add()
+
+2.student.c 也要写： #include "student.h"
+如果 student.c 中的函数定义不小心写成了 double Add(int a, int b)，它和头文件中的声明就不一致
+引入头文件能帮助编译器检查这种不一致。
+
+student.h：集中存放函数声明。
+student.c：引入头文件，按照声明实现函数。
+main.c：引入头文件，使用函数。
+```
+
+##### 问题3：#include 是把 student.h 中的内容复制到当前 .c 文件中吗？
+```text
+#include：负责引入文件内容，不负责实现函数。
+```
+
+##### 问题4：如果 main.c 只有函数声明，却没有函数定义，程序最终能正常运行吗？
+```text
+如果只有函数声明，没有函数定义，程序通常无法通过链接阶段。
+
+需要区分两个阶段：
+1. 编译阶段：main.c 通过头文件知道 Add() 的声明，因此可以检查调用是否正确。
+2. 链接阶段：链接器需要找到 student.c 中 Add() 的具体实现，把它和 main.c 联系起来。
+```
+
+#### 2.头文件保护
+```text
+假设 main.c 中不小心两次引入了同一个头文件：
+#include "student.h"
+#include "student.h"
+这样可能导致头文件中的声明被重复处理。
+```
+使用头文件保护：
+```c
+#ifndef STUDENT_H  //如果 STUDENT_H 还没有被定义，就执行下面的内容。
+#define STUDENT_H 
+
+int Add(int a, int b);
+
+#endif  //结束条件编译区域
+
+//小提醒：STUDENT_H 是我们自己起的标记名称，通常使用大写字母，并与头文件名对应。
+```
+执行过程：
+```text
+1. 第一次引入 student.h：STUDENT_H 尚未定义，于是执行下面的内容。
+2. 执行 #define STUDENT_H，标记它已经定义。
+3. 第二次引入 student.h：发现 STUDENT_H 已经定义，就跳过这部分内容。
+```
+
+#### 3.学习多个 .c 文件如何编译和链接
+##### 问题1：编译时，应该只编译 main.c，还是 main.c 和 student.c 都要参与编译？
+```text
+main.c 和 student.c 都要参与编译和链接。
+
+原因是：
+- main.c 中有 main()，负责程序入口，也调用了 Add()。
+- student.c 中有 Add() 的具体实现。
+- student.h 提供函数声明，但它本身不提供函数实现。不需要单独编译。
+```
+使用 GCC 时可以这样编译：
+```c
+gcc main.c student.c -o program
+```
+
+##### 问题2：如果只编译 main.c，为什么链接器找不到 Add()？
+```text
+main.c 中虽然通过 student.h 知道了 Add() 的声明，但 Add() 的具体实现位于 student.c。
+```
+记住一个区别：
+```text
+- 编译：将每个 .c 文件编译成目标文件（如 .o）。
+- 链接：将目标文件组合起来，解析函数调用与函数实现之间的关系。
+```
+例如：
+```c
+gcc -c main.c
+gcc -c student.c
+gcc main.o student.o -o program
+```
+解释：
+```text
+1.gcc -c main.c
+
+gcc：调用 GCC 编译器。
+-c：只编译，不进行链接。//!!!!!!
+main.c：需要编译的源文件。
+//执行后会生成main.o
+main.o 是目标文件，里面包含编译后的机器代码，但还不是可以独立运行的完整程序。
+
+2.gcc main.o student.o -o program
+main.o：包含 main()，以及对 Add() 的调用。
+student.o：包含 Add() 的具体实现。
+-o program：指定最终生成的可执行文件名称为 program。
+链接器会找到 main.o 中需要的 Add()，并将它与 student.o 中的实现对应起来。
+最终生成：program //这就是可以运行的程序。
+```
+
+#### 4.extern 和 static，学习多个文件之间如何使用全局变量。
+##### 问题1：如何让多个 .c 文件访问同一个全局变量？
+```text
+假设有两个文件。
+1.student.c：
+int count = 10;
+
+2.main.c：
+#include <stdio.h>
+
+int main(void) {
+    printf("%d\n", count);
+    return 0;
+}
+
+//这段代码不能正常编译。
+student.c 中定义了全局变量 count，但 main.c 并不知道这个变量的存在。
+//需要用 extern 告诉 main.c：
+“有一个 count 变量，它是在其他地方定义的，你可以使用它。”
+```
+修改：
+```c
+//student.c
+int count = 10;//定义全局变量
+
+//main.c
+#include <stdio.h>
+
+extern int count; //声明其他地方定义的变量
+
+int main(void) {
+    printf("%d\n", count);
+    return 0;
+}
+
+//编译时：
+gcc main.c student.c -o program
+//运行结果：
+10
+```
+```text
+int count = 10;	定义全局变量
+extern int count;	声明其他地方定义的变量
+通常，一个全局变量只在一个 .c 文件中定义，其他文件通过 extern 声明后使用。
+```
+
+#### 理解 extern
+```text
+它是一个外部变量声明：
+- extern：告诉编译器，这个变量在其他地方定义。
+- int count：告诉编译器，这个变量的类型和名称。
+- 末尾的分号：表示声明结束。
+```
+
+##### 问题2：重复定义
+```text
+如果 main.c 中写：int count = 20;
+而 student.c 中也有：int count = 10;
+两个文件都定义了一个具有外部链接属性的全局变量 count。
+
+当两个文件一起编译、链接时，链接器会发现：
+- main.c 定义了一个 count
+- student.c 也定义了一个 count
+它无法确定应该使用哪个定义，因此通常会报错：multiple definition of count（重复定义）。
+```
+
+
+##### 问题3：如果我希望 count 只能在 student.c 文件内部使用，其他 .c 文件都不能访问，应该怎么做？
+解决：
+```c
+//student.c 
+static int count = 10;
+//这里的 static 改变的是全局变量的链接属性，不是它的生命周期。它仍然在整个程序运行期间存在。
+```
+
+对比：
+```text
+int count = 10;	普通全局变量，其他文件可以通过 extern 声明使用
+static int count = 10;	限制在当前 .c 文件内部使用
+extern int count;	声明其他地方定义的外部变量
+```
+
+
+```
+```
+```
+```
+
+
+
+```
+```
+```
+```
+
+
+
+```
+```
+```
+```
+
+```
+```
+```
+```
+
+```
+```
+```
+```
+
+```
+```
+```
+```
+
+
+```
+```
+```
+```
