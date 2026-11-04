@@ -447,7 +447,61 @@ scanf()：从键盘读取用户输入的数据。
 fscanf()：从指定文件读取数据。
 
 ```
-```
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+
+//联系人
+typedef struct {
+	char name[20];
+	int age;
+	char phone[20];
+}Contact;
+
+//通讯录
+typedef struct {
+	Contact* contacts;// 指向动态分配的联系人数组
+	int size;   // 当前联系人数量
+}AddressBook;
+
+//初始化函数
+void init_addressbook(AddressBook* pb) {
+	pb->contacts = NULL;
+	pb->size = 0;
+}
+
+//添加第一个联系人,并输入信息
+int add_contact(AddressBook* pb) {
+	pb->contacts = malloc(sizeof(Contact));
+	if (pb->contacts == NULL) {
+		printf("内存申请失败！\n");
+		return 0;
+	}
+
+
+	printf("请输入第一位联系人的信息：\n");
+	if (scanf("%19s %d %19s",
+		pb->contacts->name,
+		&pb->contacts->age,
+		pb->contacts->phone) != 3) {
+		printf("输入格式错误！\n");
+		free(pb->contacts);//释放内存
+		pb->contacts = NULL;//指向NULL
+		pb->size = 0;//归零
+		return 0;
+	}
+
+	//输入成功后再改size
+	pb->size++;
+	printf("联系人添加成功\n");
+	
+	return 1;
+}
+
+
 ```
 ```
 
